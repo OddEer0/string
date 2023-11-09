@@ -3,7 +3,7 @@
 #include "string.h"
 
 START_TEST(strlen_testing) {
-    char value[] = "text";
+    char value[] = "text text";
     ck_assert_uint_eq(strlen(value), s21_strlen(value));
 }
 END_TEST
@@ -11,20 +11,32 @@ END_TEST
 START_TEST(strchr_testing) {
     char value[] = "league of legend wild rift";
     ck_assert_int_eq(*strchr(value, 'w'), *s21_strchr(value, 'w'));
+    ck_assert_ptr_eq(strchr(value, 'k'), s21_strchr(value, 'k'));
+    ck_assert_ptr_null(s21_strchr(value, 'k'));
 }
 END_TEST
 
 START_TEST(strrchr_testing) {
     char value[] = "league of legend wild rift";
     ck_assert_int_eq(*strrchr(value, 'e'), *s21_strrchr(value, 'e'));
+    ck_assert_ptr_eq(strrchr(value, 'k'), s21_strrchr(value, 'k'));
+    ck_assert_ptr_null(s21_strrchr(value, 'k'));
 }
 END_TEST
 
 START_TEST(strncmp_testing) {
     char value[] = "league of legend wild rift";
     char value2[] = "league of legend wild rift";
+    char value3[] = "league of legend";
+    char value4[] = "league legend";
     int n = 30;
     ck_assert_int_eq(strncmp(value, value2, n), s21_strncmp(value, value2, n));
+    ck_assert_int_eq(strncmp(value, value2, 6), s21_strncmp(value, value2, 6));
+    ck_assert_int_eq(strncmp(value, value3, 6), s21_strncmp(value, value3, 6));
+    ck_assert_int_eq(strncmp(value, value3, n), s21_strncmp(value, value3, n));
+    ck_assert_int_eq(strncmp(value3, value, n), s21_strncmp(value3, value, n));
+    ck_assert_int_eq(strncmp(value3, value4, n), s21_strncmp(value3, value4, n));
+    ck_assert_int_eq(strncmp(value4, value3, n), s21_strncmp(value4, value3, n));
 }
 END_TEST
 

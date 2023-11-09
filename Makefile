@@ -11,6 +11,9 @@ all: clean s21_string.a test
 test: string/string.c __test__/main.c
 	$(CC) $(CFLAGS) $^ -o $@ $(GCOV_FLAGS) $(CHECK_FLAGS)
 
+watch: clean s21_string.a test
+	./test
+
 s21_string.a:
 	$(CC) $(CFLAGS) -c string/string.c -o string.o
 	ar rcs $@ string.o
