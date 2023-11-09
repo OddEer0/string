@@ -1,5 +1,6 @@
 typedef unsigned long size_t;
-#define NULL (void*)0;
+
+#define NULL (void*)0
 
 void *memchr(const void *str, int c, size_t n);
 int memcmp(const void *str1, const void *str2, size_t n);

@@ -21,3 +21,16 @@ char *strncat(char *dest, const char *src, size_t n) {
 
     return dest;
 }
+
+char *strchr(const char *str, int c) {
+    char *result = NULL;
+    char *tmp = (char*)str;
+
+    while(tmp != '\0' && result == NULL) {
+        if (*tmp == c) {
+            result = tmp;
+        tmp++;
+    }
+
+    return result;
+}
