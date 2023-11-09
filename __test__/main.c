@@ -41,11 +41,15 @@ START_TEST(strncmp_testing) {
 END_TEST
 
 START_TEST(strncat_testing) {
-    char value[50] = "league of legend wild rift";
-    char value2[50] = "league of legend wild rift";
-    char valueSrc[] = "all line";
-    int valueN = 8;
+    char value[36] = "league of legend wild rift";
+    char value2[36] = "league of legend wild rift";
+    char valueSrc[] = "all stars";
+    int valueN = 9;
     ck_assert_str_eq(strncat(value, valueSrc, valueN), s21_strncat(value2, valueSrc, valueN));
+    char value3[100] = "lolxdlolxd";
+    char value4[100] = "lolxdlolxd";
+    ck_assert_str_eq(strncat(value3, valueSrc, valueN), s21_strncat(value4, valueSrc, valueN));
+    ck_assert_str_eq(strncat(value3, valueSrc, valueN + 1), s21_strncat(value4, valueSrc, valueN + 1)); // FAIL
 }
 END_TEST
 

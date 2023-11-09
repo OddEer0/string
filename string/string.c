@@ -11,7 +11,7 @@ char *s21_strncat(char *dest, const char *src, s21_size_t n) {
 
     for (char* tmp = (char*) src; *tmp != '\0' || n; tmp++, destLength++, n--)
         dest[destLength] = *tmp;
-    dest[destLength] = '\0';
+    dest[destLength + 1] = '\0';
 
     return dest;
 }
