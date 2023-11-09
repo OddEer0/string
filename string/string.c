@@ -1,53 +1,53 @@
 #include "../s21_string.h"
 
-size_t strlen(const char *str) {
-    size_t result = 0;
+s21_size_t s21_strlen(const char *str) {
+    s21_size_t result = 0;
     char* tmp = (char*)str;
 
-    while(tmp != '\0') {
+    while(*tmp != '\0') {
         result++;
+        tmp++;
     }
 
     return result;
 }
 
-char *strncat(char *dest, const char *src, size_t n) {
-    size_t destLength = strlen((const char*)dest);
+char *s21_strncat(char *dest, const char *src, s21_size_t n) {
+    s21_size_t destLength = s21_strlen((const char*)dest);
     char* tmp = (char*) src;
 
-    for (int i = 0; tmp != '\0' || i < n; i++, tmp++, destLength++)
-        dest[destLength] = tmp;
+    for (unsigned int i = 0; *tmp != '\0' || i < n; i++, tmp++, destLength++)
+        dest[destLength] = *tmp;
     dest[destLength] = '\0';
 
     return dest;
 }
 
-char *strchr(const char *str, int c) {
-    char *result = NULL;
+char *s21_strchr(const char *str, int c) {
+    char *result = S21_NULL;
 
-    for (char *tmp = (char*) str; tmp != '\0' && result == NULL; tmp++)
+    for (char *tmp = (char*) str; *tmp != '\0' && result == S21_NULL; tmp++)
         if (*tmp == c) result = tmp;
 
     return result;
 }
 
-char *strrchr(const char *str, int c) {
-    char *result = NULL;
+char *s21_strrchr(const char *str, int c) {
+    char *result = S21_NULL;
 
-    for (char *tmp = (char*) str; tmp != '\0'; tmp++)
+    for (char *tmp = (char*) str; *tmp != '\0'; tmp++)
         if (*tmp == c) result = tmp;
 
     return result;
 }
 
-int strncmp(const char *str1, const char *str2, size_t n) {
-    size_t length1 = strlen(str1), length2 = strlen(str2);
+int s21_strncmp(const char *str1, const char *str2, s21_size_t n) {
+    s21_size_t length1 = s21_strlen(str1), length2 = s21_strlen(str2);
     int result = 0;
 
-    for (int i = 0, k = 0; i < n && !result && !k; i++) {
-        if (i + 1 == length1 && i + 1 == length2) {
+    for (unsigned int i = 0, k = 0; i < n && !result && !k; i++) {
+        if (i + 1 == length1 && i + 1 == length2)
             k = 1;
-        } 
         
         if (i >= length2) {
             result = str1[i];
