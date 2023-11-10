@@ -49,7 +49,10 @@ START_TEST(strncat_testing) {
     char value3[100] = "lolxdlolxd";
     char value4[100] = "lolxdlolxd";
     ck_assert_str_eq(strncat(value3, valueSrc, valueN), s21_strncat(value4, valueSrc, valueN));
-    ck_assert_str_eq(strncat(value3, valueSrc, valueN + 1), s21_strncat(value4, valueSrc, valueN + 1)); // FAIL
+    ck_assert_str_eq(strncat(value3, valueSrc, valueN + 1), s21_strncat(value4, valueSrc, valueN + 1));
+    char value5[100] = "lolxdlolxd";
+    char value6[100] = "lolxdlolxd";
+    ck_assert_str_eq(strncat(value5, valueSrc, valueN - 3), s21_strncat(value6, valueSrc, valueN - 3));
 }
 END_TEST
 
