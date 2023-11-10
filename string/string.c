@@ -19,7 +19,7 @@ char *s21_strncat(char *dest, const char *src, s21_size_t n) {
 char *s21_strchr(const char *str, int c) {
     char *result = S21_NULL;
 
-    for (char *tmp = (char*) str; *tmp != '\0' && result == S21_NULL; tmp++)
+    for (char *tmp = (char*) str; *tmp != '\0' && !result; tmp++)
         if (*tmp == c) result = tmp;
 
     return result;
@@ -73,5 +73,15 @@ char *s21_strstr(const char *haystack, const char *needle) {
         result = *tmp2 == '\0' ? (char*)haystack : S21_NULL;
     }
     
+    return result;
+}
+
+char *s21_strpbrk(const char *str1, const char *str2) {
+    char* result = S21_NULL;
+
+    for (char *tmp1 = (char*) str1; *tmp1 != '\0' && !result; tmp1++)
+        for (char *tmp2 = (char*) str2; *tmp2 != '\0' && !result; tmp2++)
+            if (*tmp1 == *tmp2) result = tmp1;
+
     return result;
 }

@@ -93,8 +93,19 @@ START_TEST(strstr_testing) {
 }
 END_TEST
 
+START_TEST(strpbrk_testing) {
+    char value[] = "league of legend wild rift";
+    char searchs[] = "eu";
+    ck_assert_str_eq(strpbrk(value, searchs), s21_strpbrk(value, searchs));
+    ck_assert_str_eq(strpbrk(value, "t"), s21_strpbrk(value, "t"));
+    ck_assert_str_eq(strpbrk(value, "fo"), s21_strpbrk(value, "fo"));
+    ck_assert_ptr_null(strpbrk(value, "k"));
+    ck_assert_ptr_null(s21_strpbrk(value, "k"));
+}
+END_TEST
+
 Suite *string_suite() {
-    TCase *strlen, *strchr, *strrchr, *strncmp, *strncat, *strncpy, *strcspn, *strstr;
+    TCase *strlen, *strchr, *strrchr, *strncmp, *strncat, *strncpy, *strcspn, *strstr, *strpbrk;
     Suite *s = suite_create("String");
 
     strlen = tcase_create("strlen");
@@ -128,6 +139,10 @@ Suite *string_suite() {
     strstr = tcase_create("strstr");
     tcase_add_test(strstr, strstr_testing);
     suite_add_tcase(s, strstr);
+
+    strpbrk = tcase_create("strstr");
+    tcase_add_test(strpbrk, strpbrk_testing);
+    suite_add_tcase(s, strpbrk);
 
     return s;
 }
