@@ -49,15 +49,52 @@ START_TEST(strncat_testing) {
     char value3[100] = "lolxdlolxd";
     char value4[100] = "lolxdlolxd";
     ck_assert_str_eq(strncat(value3, valueSrc, valueN), s21_strncat(value4, valueSrc, valueN));
-    ck_assert_str_eq(strncat(value3, valueSrc, valueN + 1), s21_strncat(value4, valueSrc, valueN + 1));
-    char value5[100] = "lolxdlolxd";
-    char value6[100] = "lolxdlolxd";
-    ck_assert_str_eq(strncat(value5, valueSrc, valueN - 3), s21_strncat(value6, valueSrc, valueN - 3));
+    ck_assert_str_eq(strncat(value3, valueSrc, valueN + 3), s21_strncat(value4, valueSrc, valueN + 3));
+    ck_assert_str_eq(strncat(value3, valueSrc, valueN - 3), s21_strncat(value4, valueSrc, valueN - 3));
+}
+END_TEST
+
+START_TEST(strncpy_testing) {
+    char value[100] = "";
+    char value2[100] = "";
+    char valueSrc[] = "all stars";
+    int valueN = 9;
+    ck_assert_str_eq(strncpy(value, valueSrc, valueN), s21_strncpy(value2, valueSrc, valueN));
+    char value3[100] = "lolxdlolxd ";
+    char value4[100] = "lolxdlolxd ";
+    ck_assert_str_eq(strncpy(value3, valueSrc, valueN), s21_strncpy(value4, valueSrc, valueN));
+    ck_assert_str_eq(strncpy(value3, valueSrc, valueN + 3), s21_strncpy(value4, valueSrc, valueN + 3));
+    ck_assert_str_eq(strncpy(value3, valueSrc, valueN - 3), s21_strncpy(value4, valueSrc, valueN - 3));
+    char value5[36] = "league of legend wild rift";
+    char value6[36] = "league of legend wild rift";
+    ck_assert_str_eq(strncpy(value5, valueSrc, valueN), s21_strncpy(value6, valueSrc, valueN));
+}
+END_TEST
+
+START_TEST(strcspn_testing) {
+    char value[] = "league of legend wild rift";
+    char exceptions[] = "eu";
+    ck_assert_uint_eq(strcspn(value, exceptions), s21_strcspn(value, exceptions));
+    ck_assert_uint_eq(strcspn(value, "v"), s21_strcspn(value, "v"));
+    ck_assert_uint_eq(strcspn(value, " "), s21_strcspn(value, " "));
+}
+END_TEST
+
+START_TEST(strstr_testing) {
+    char value[] = "league of legend wild rift";
+    char search[] = "of";
+    ck_assert_str_eq(strstr(value, search), s21_strstr(value, search));
+    ck_assert_ptr_null(strstr(value, "not"));
+    ck_assert_ptr_null(s21_strstr(value, "not"));
+    ck_assert_str_eq(strstr(value, "t"), s21_strstr(value, "t"));
+    ck_assert_str_eq(strstr(value, "e"), s21_strstr(value, "e"));
+    ck_assert_str_eq(strstr(value, " "), s21_strstr(value, " "));
+    ck_assert_str_eq(strstr(value, " of"), s21_strstr(value, " of"));
 }
 END_TEST
 
 Suite *string_suite() {
-    TCase *strlen, *strchr, *strrchr, *strncmp, *strncat;
+    TCase *strlen, *strchr, *strrchr, *strncmp, *strncat, *strncpy, *strcspn, *strstr;
     Suite *s = suite_create("String");
 
     strlen = tcase_create("strlen");
@@ -79,6 +116,18 @@ Suite *string_suite() {
     strncat = tcase_create("strncat");
     tcase_add_test(strncat, strncat_testing);
     suite_add_tcase(s, strncat);
+
+    strncpy = tcase_create("strncpy");
+    tcase_add_test(strncpy, strncpy_testing);
+    suite_add_tcase(s, strncpy);
+
+    strcspn = tcase_create("strcspn");
+    tcase_add_test(strcspn, strcspn_testing);
+    suite_add_tcase(s, strcspn);
+
+    strstr = tcase_create("strstr");
+    tcase_add_test(strstr, strstr_testing);
+    suite_add_tcase(s, strstr);
 
     return s;
 }
