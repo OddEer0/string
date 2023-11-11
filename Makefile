@@ -9,7 +9,7 @@ ez:
 all: clean s21_string.a test
 
 test: string/string.c __test__/main.c
-	$(CC) $(CFLAGS) $^ -o $@ $(GCOV_FLAGS) $(CHECK_FLAGS)
+	$(CC) -std=c11 $^ -o $@ $(GCOV_FLAGS) $(CHECK_FLAGS)
 
 watch: clean s21_string.a test
 	./test

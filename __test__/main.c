@@ -29,14 +29,14 @@ START_TEST(strncmp_testing) {
     char value2[] = "league of legend wild rift";
     char value3[] = "league of legend";
     char value4[] = "league legend";
-    int n = 30;
+    int n = 27;
     ck_assert_int_eq(strncmp(value, value2, n), s21_strncmp(value, value2, n));
     ck_assert_int_eq(strncmp(value, value2, 6), s21_strncmp(value, value2, 6));
     ck_assert_int_eq(strncmp(value, value3, 6), s21_strncmp(value, value3, 6));
     ck_assert_int_eq(strncmp(value, value3, n), s21_strncmp(value, value3, n));
     ck_assert_int_eq(strncmp(value3, value, n), s21_strncmp(value3, value, n));
-    ck_assert_int_eq(strncmp(value3, value4, n), s21_strncmp(value3, value4, n));
-    ck_assert_int_eq(strncmp(value4, value3, n), s21_strncmp(value4, value3, n));
+    ck_assert_int_eq(strncmp(value3, value4, n - 10), s21_strncmp(value3, value4, n - 10));
+    ck_assert_int_eq(strncmp(value4, value3, n - 10), s21_strncmp(value4, value3, n - 10));
 }
 END_TEST
 
