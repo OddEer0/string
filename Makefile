@@ -14,6 +14,9 @@ test: string/string.c __test__/main.c
 watch: clean s21_string.a test
 	./test
 
+sprintf:
+	$(CC) string/string.c string/str_format_parser.c string/sprintf.c -o a
+
 s21_string.a:
 	$(CC) $(CFLAGS) -c string/string.c -o string.o
 	ar rcs $@ string.o
