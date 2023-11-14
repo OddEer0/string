@@ -49,8 +49,10 @@ int s21_sprintf(char *str, const char *format, ...) {
 
 int main() {
     char buff[400];
-    s21_sprintf(buff, "%d %#20.20d lol all", 20, 14);
-    printf("%s\n", buff);
+    char format[] = "%d %#20.20d lol all\n";
+    s21_sprintf(buff, format, 20, 14);
+    printf(format, 20, 14);
+    printf("%s", buff);
 
     return 0;
 }
