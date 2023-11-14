@@ -28,6 +28,7 @@ int s21_sprintf(char *str, const char *format, ...) {
 
     char *tmp = (char*)format, *strTmp = str;
     s21_size_t formatLength = s21_strlen(format);
+    
     for (; formatLength; formatLength--, strTmp++, tmp++) {
         if (isFormat(*tmp)) {
             TStrFormatParse *PFormat = createFormatParse();

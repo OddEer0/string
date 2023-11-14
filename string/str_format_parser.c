@@ -1,7 +1,6 @@
 #include "./str_format_parser.h"
 #include "../s21_string.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 int isFlags(char sym) {
     return !!s21_strchr("-+#0 ", sym);
