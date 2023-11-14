@@ -1,24 +1,44 @@
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "./str_format_parser.h"
+#include "../s21_string.h"
+#include "./helper.h"
+
+s21_size_t printd(char *str, TStrFormatParse *PFormat, va_list *args) {
+    int value = va_arg(*args, int);
+    char buff[30];
+    s21_itoa(value, buff, 10);
+    s21_size_t length = s21_strlen(buff);
+    s21_strncat(str, buff, length);
+    return length;
+}
+
+s21_size_t PrintStrategy(char* str, TStrFormatParse *PFormat, va_list *args) {
+    s21_size_t result = 0;
+    if (PFormat->type == 'd') {
+        result = printd(str, PFormat, args);
+    }
+    return result;
+}
 
 int s21_sprintf(char *str, const char *format, ...) {
     va_list args;
     va_start(args, format);
 
-    char *tmp = (char*)format;
-    for (; *tmp != '\0'; tmp++) {
+    char *tmp = (char*)format, *strTmp = str;
+    s21_size_t formatLength = s21_strlen(format);
+    for (; formatLength; formatLength--, strTmp++, tmp++) {
         if (isFormat(*tmp)) {
             TStrFormatParse *PFormat = createFormatParse();
             strFormatParser(tmp, PFormat);
-
-            printf("flags - jail: %d minus: %d plus: %d zero: %d space: %d\n", PFormat->flags->jail, PFormat->flags->minus, PFormat->flags->plus, PFormat->flags->zero, PFormat->flags->space);
-            printf("width: %d isStar: %d\n", PFormat->width, PFormat->widthStar);
-            printf("precision: %d isStar: %d\n", PFormat->precision, PFormat-> precisionStar);
-            printf("length: %c\n", PFormat->length);
-            printf("type: %c\n", PFormat->type);
+            s21_size_t len = PrintStrategy(str, PFormat, &args);
+            tmp += PFormat->formatLength;
+            strTmp += len - 1;
 
             freeFormatParse(PFormat);
+        } else {
+            *strTmp = *tmp;
         }
     }
 
@@ -28,7 +48,8 @@ int s21_sprintf(char *str, const char *format, ...) {
 
 int main() {
     char buff[400];
-    s21_sprintf(buff, "%d %#20.20f", 20, 14);
+    s21_sprintf(buff, "%d %#20.20d lol all", 20, 14);
+    printf("%s\n", buff);
 
     return 0;
 }
