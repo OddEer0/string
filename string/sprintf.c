@@ -26,22 +26,27 @@ int s21_sprintf(char *str, const char *format, ...) {
     va_list args;
     va_start(args, format);
 
+    str[0] = '\0';
+
     char *tmp = (char*)format, *strTmp = str;
     s21_size_t formatLength = s21_strlen(format);
     
-    for (; formatLength; formatLength--, strTmp++, tmp++) {
+    for (int length = 0; formatLength; formatLength--, strTmp++, tmp++, length++) {
         if (isFormat(*tmp)) {
             TStrFormatParse *PFormat = createFormatParse();
             strFormatParser(tmp, PFormat);
+            str[length] = '\0';
             s21_size_t len = PrintStrategy(str, PFormat, &args);
             tmp += PFormat->formatLength;
             strTmp += len - 1;
+            length += len - 1;
 
             freeFormatParse(PFormat);
         } else {
             *strTmp = *tmp;
         }
     }
+    *(strTmp + 1) = '\0';
 
     va_end(args);
     return 0;
