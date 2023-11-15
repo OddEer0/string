@@ -7,7 +7,7 @@ int isFlags(char sym) {
 }
 
 int isType(char sym) {
-    return !!s21_strchr("cdfsugGeExXop", sym);
+    return !!s21_strchr("cdfsugGeExXop%", sym);
 }
 
 int isPrecision(char sym) {
