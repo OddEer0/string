@@ -13,6 +13,7 @@ int s21_sprintf(char *str, const char *format, ...) {
 
             // Code
 
+            i += PFormat->formatLength;
             freeFormatParse(PFormat);
         } else {
             char buff[] = {format[i]};

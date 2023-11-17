@@ -12,7 +12,7 @@ int main() {
     s21_sprintf(buff, format, 4);
 
     printf("original: %s\n", buffOrig);
-    printf("custom: %s", buff);
+    printf("custom: %s\n", buff);
 
     return 0;
 }
