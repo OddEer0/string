@@ -1,4 +1,4 @@
-#include "./helper.h"
+#include "./utils.h"
 #include <stdlib.h>
 
 void swap(char *x, char *y) {
@@ -13,12 +13,12 @@ char* reverse(char *buffer, int i, int j) {
     return buffer;
 }
 
-char *s21_itoa(int value, char* buffer, int base) {
+char* s21_itoa(long int value, char* buffer, int base) {
     if (base < 2 || base > 32) {
         return buffer;
     }
  
-    int n = abs(value);
+    int n = abs((int)value);
  
     int i = 0;
     while (n) {

@@ -11,8 +11,13 @@ test: string/string.c __test__/main.c
 watch: clean s21_string.a test
 	./test
 
-sprintf:
-	$(CC) string/string.c string/str_format_parser.c string/sprintf.c string/helper.c -o a
+sprint:
+	$(CC) $(CFLAGS) string/string.c shared/str_format_parser.c shared/utils.c sprintf/index.c sprintf/strategy.c sprintf/main.c -o sprint
+	./sprint
+
+ezsprint:
+	$(CC) string/string.c shared/str_format_parser.c shared/utils.c sprintf/index.c sprintf/strategy.c sprintf/main.c -o sprint
+	./sprint
 
 s21_string.a:
 	$(CC) $(CFLAGS) -c string/string.c -o string.o
