@@ -4,15 +4,15 @@
 #define BUFF_SIZE 400
 
 int main() {
-    char format[] = "%d";
+    char format[] = "% +d";
 
     char buff[BUFF_SIZE];
     char buffOrig[BUFF_SIZE];
-    sprintf(buffOrig, format, 4);
-    s21_sprintf(buff, format, 4);
+    sprintf(buffOrig, format, 444);
+    s21_sprintf(buff, format, 444);
 
-    printf("original: %s\n", buffOrig);
-    printf("custom: %s\n", buff);
+    printf("original: %s*\n", buffOrig);
+    printf("custom  : %s*\n", buff);
 
     return 0;
 }

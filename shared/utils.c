@@ -1,5 +1,6 @@
 #include "./utils.h"
 #include <stdlib.h>
+#include "../s21_string.h"
 
 void swap(char *x, char *y) {
     char t = *x; *x = *y; *y = t;
@@ -45,4 +46,16 @@ char* s21_itoa(long int value, char* buffer, int base) {
     buffer[i] = '\0';
  
     return reverse(buffer, 0, i - 1);
+}
+
+char *repeat(char sym, int count) {
+    if (count <= 0)
+        return S21_NULL;
+    char* result = calloc(count + 1, sizeof(char));
+
+    for (int i = 0; i < count; i++)
+        result[i] = sym;
+    result[count] = '\0';
+
+    return result;
 }
