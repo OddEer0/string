@@ -4,7 +4,7 @@
 #define BUFF_SIZE 400
 
 int main() {
-    char format[] = "% +d";
+    char format[] = "all and testing %d status";
 
     char buff[BUFF_SIZE];
     char buffOrig[BUFF_SIZE];

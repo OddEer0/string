@@ -4,19 +4,46 @@
 
 #include <stdio.h>
 
-void sprintfPlusSpaceFlag(TGetValueFromArg* arg, TStrFormatParse *PFormat) {
+void append(TGetValueFromArg* arg, char* append) {
+    s21_size_t appendLength = s21_strlen(append);
+    s21_size_t resLength = arg->length + appendLength;
+    char *result = calloc(resLength + 1, sizeof(char));
+    result[0] = '\0';
+    s21_strncat(result, arg->value, arg->length);
+    s21_strncat(result, append, appendLength);
+    free(arg->value);
+    arg->value = result;
+    arg->length = resLength;
+}
+
+void prepend(TGetValueFromArg* arg, char* append) {
+    s21_size_t appendLength = s21_strlen(append);
+    s21_size_t resLength = arg->length + appendLength;
+    char *result = calloc(resLength + 1, sizeof(char));
+    result[0] = '\0';
+    s21_strncat(result, append, appendLength);
+    s21_strncat(result, arg->value, arg->length);
+    free(arg->value);
+    arg->value = result;
+    arg->length = resLength;
+}
+
+void sprintfFlagHandle(TGetValueFromArg* arg, TStrFormatParse *PFormat) {
     int isCorrectFlags = !!s21_strchr("d", PFormat->type) && (PFormat->flags->plus || PFormat->flags->space);
     int isNegative = arg->value[0] == '-';
+    int hasDot = !!s21_strchr(arg->value, '.');
+    int isCorrectFlagDot = !!s21_strchr("aAeEfFgG", PFormat->type);
     
-    if (!isNegative && isCorrectFlags) {
-        char signedChar = PFormat->flags->plus ? '+' : ' ';
-        arg->length++;
-        char *modifyValue = calloc(arg->length + 2, sizeof(char));
-        modifyValue[0] = signedChar; modifyValue[1] = '\0';
-        s21_strncat(modifyValue, arg->value, arg->length);
-        free(arg->value);
-        arg->value = modifyValue;
-    }
+    if (!isNegative && isCorrectFlags)
+        prepend(arg, PFormat->flags->plus ? "+" : " ");
+    else if (!hasDot && isCorrectFlagDot)
+        append(arg, ".");
+    else if (PFormat->type == 'o')
+        prepend(arg, "0");
+    else if (PFormat->type == 'x')
+        prepend(arg, "0x");
+    else if (PFormat->type == 'X')
+        prepend(arg, "0X");
 }
 
 void sprintfWidth(char* str, TGetValueFromArg* arg, TStrFormatParse *PFormat) {
@@ -37,7 +64,7 @@ int printProccess(char *str, TStrFormatParse *PFormat, va_list *args, TGetValueF
     PFormat->width = PFormat->widthStar ? va_arg(*args, int) : PFormat->width;
     TGetValueFromArg arg = getValueFromArg(PFormat, args);
 
-    sprintfPlusSpaceFlag(&arg, PFormat);
+    sprintfFlagHandle(&arg, PFormat);
     sprintfWidth(str,  &arg, PFormat);
 
     freeGetValueFromArg(&arg);
