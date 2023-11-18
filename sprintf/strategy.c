@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "../shared/utils.h"
 
-TGetValueFromArg IntStrategy(TStrFormatParse* PFormat, va_list *args) {
+TGetValueFromArg DecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {0, S21_NULL, 0};
     char buff[30];
     s21_itoa(va_arg(*args, int), buff, 10);
@@ -15,7 +15,7 @@ TGetValueFromArg IntStrategy(TStrFormatParse* PFormat, va_list *args) {
     return result;
 }
 
-TGetValueFromArg UnsignedIntStrategy(TStrFormatParse* PFormat, va_list *args) {
+TGetValueFromArg UnsignedDecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {0, S21_NULL, 0};
     return result;
 }
@@ -65,10 +65,10 @@ TGetValueFromArgStrategy getValueFromArgStrategyBySpecifier(char specifier) {
 
     switch(specifier) {
         case 'd':
-            result = IntStrategy;
+            result = DecimalStrategy;
             break;
         case 'u':
-            result = UnsignedIntStrategy;
+            result = UnsignedDecimalStrategy;
             break;
         case 'c':
             result = CharStrategy;
