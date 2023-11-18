@@ -28,6 +28,22 @@ void prepend(TGetValueFromArg* arg, char* append) {
     arg->length = resLength;
 }
 
+void sprintfPrecision(TGetValueFromArg* arg, TStrFormatParse *PFormat) {
+    int isNegative = arg->value[0] == '-';
+    int isNum = !!s21_strchr("douxX", PFormat->type);
+    int isFloat = !!s21_strchr("eEfgG", PFormat->type);
+    
+    if (isNum) {
+        int length = arg->length - isNegative;
+        int zeroCount = PFormat->precision - length;
+        char *buff = repeat('0', zeroCount);
+        if (buff) {
+            prepend(arg, buff);
+            free(buff);
+        }
+    }
+}
+
 void sprintfFlagHandle(TGetValueFromArg* arg, TStrFormatParse *PFormat) {
     int isCorrectFlags = !!s21_strchr("d", PFormat->type) && (PFormat->flags->plus || PFormat->flags->space);
     int isNegative = arg->value[0] == '-';
@@ -62,8 +78,10 @@ void sprintfWidth(char* str, TGetValueFromArg* arg, TStrFormatParse *PFormat) {
 
 int printProccess(char *str, TStrFormatParse *PFormat, va_list *args, TGetValueFromArgStrategy getValueFromArg) {
     PFormat->width = PFormat->widthStar ? va_arg(*args, int) : PFormat->width;
+    PFormat->precision = PFormat->precisionStar ? va_arg(*args, int) : PFormat->precision < 0 ? 6 : PFormat->precision;
     TGetValueFromArg arg = getValueFromArg(PFormat, args);
 
+    sprintfPrecision(&arg, PFormat);
     sprintfFlagHandle(&arg, PFormat);
     sprintfWidth(str,  &arg, PFormat);
 

@@ -131,7 +131,7 @@ TStrFormatParse *createFormatParse() {
     TStrFormatParse *result = malloc(sizeof(TStrFormatParse));
     result->flags = flags;
     result->width = 0;
-    result->precision = 0;
+    result->precision = -1;
     result->length = 0;
     result->widthStar = 0;
     result->precisionStar = 0;

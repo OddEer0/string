@@ -37,6 +37,13 @@ TGetValueFromArg PercentStrategy(TStrFormatParse* PFormat, va_list *args) {
 
 TGetValueFromArg FloatStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {0, S21_NULL, 0};
+    char buff[50];
+    ftoa(va_arg(*args, double), buff, PFormat->precision);
+    s21_size_t length = s21_strlen(buff);
+    result.value = calloc(length + 1, sizeof(char));
+    result.value[0] = '\0';
+    s21_strncpy(result.value, buff, length);
+    result.length = length;
     return result;
 }
 
