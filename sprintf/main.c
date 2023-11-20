@@ -8,11 +8,13 @@ int main() {
 
     char buff[BUFF_SIZE];
     char buffOrig[BUFF_SIZE];
-    sprintf(buffOrig, format, 444, 1000000.0 / 3.0, 'h', "lool", 444);
-    s21_sprintf(buff, format, 444, 1000000.0 / 3.0, 'h', "lool", 444);
+    int result = sprintf(buffOrig, format, 444, 1000000.0 / 3.0, 'h', "lool", 444);
+    int resultC = s21_sprintf(buff, format, 444, 1000000.0 / 3.0, 'h', "lool", 444);
 
     printf("original: %s*\n", buffOrig);
     printf("custom  : %s*\n", buff);
+    printf("orifinal return: %d\n", result);
+    printf("custom return  : %d\n", resultC);
 
     return 0;
 }

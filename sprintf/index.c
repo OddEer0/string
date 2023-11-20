@@ -82,7 +82,7 @@ int printProccess(char *str, TStrFormatParse *PFormat, va_list *args, TGetValueF
     s21_strncat(str, arg.value, arg.length);
 
     freeGetValueFromArg(&arg);
-    return 1;
+    return arg.length;
 }
 
 int s21_sprintf(char *str, const char *format, ...) {
@@ -97,13 +97,14 @@ int s21_sprintf(char *str, const char *format, ...) {
             TStrFormatParse *PFormat = createFormatParse();
             strFormatParser((char*)&format[i], PFormat);
 
-            printProccess(str, PFormat, &args, getValueFromArgStrategyBySpecifier(PFormat->type));
+            result += printProccess(str, PFormat, &args, getValueFromArgStrategyBySpecifier(PFormat->type));
 
             i += PFormat->formatLength;
             freeFormatParse(PFormat);
         } else {
             char buff[] = {format[i]};
             s21_strncat(str, buff, 1);
+            result++;
         }
     }
 
