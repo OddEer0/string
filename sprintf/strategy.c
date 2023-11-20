@@ -23,7 +23,7 @@ TGetValueFromArg DecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
 TGetValueFromArg UnsignedDecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {0, S21_NULL, 0};
     char buff[30];
-    s21_uitoa(va_arg(*args, int), buff, 10);
+    s21_uitoa(va_arg(*args, unsigned long int), buff, 10);
     s21_size_t length = s21_strlen(buff);
     result.value = calloc(length + 1, sizeof(char));
     result.value[0] = '\0';
@@ -69,7 +69,7 @@ TGetValueFromArg PercentStrategy(TStrFormatParse* PFormat, va_list *args) {
 TGetValueFromArg FloatStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {0, S21_NULL, 0};
     char buff[50];
-    ftoa(va_arg(*args, double), buff, PFormat->precision);
+    s21_ftoa(va_arg(*args, double), buff, PFormat->precision);
     s21_size_t length = s21_strlen(buff);
     result.value = calloc(length + 1, sizeof(char));
     result.value[0] = '\0';

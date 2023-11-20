@@ -106,7 +106,7 @@ char* s21_uitoa(unsigned long int value, char* buffer, int base) {
  
     int i = 0;
     while (n) {
-        int r = n % base;
+        unsigned long int r = n % base;
  
         if (r >= 10) {
             buffer[i++] = 65 + (r - 10);
@@ -125,4 +125,51 @@ char* s21_uitoa(unsigned long int value, char* buffer, int base) {
     buffer[i] = '\0';
  
     return reverse(buffer, 0, i - 1);
+}
+
+char* append(char* dest, char* append) {
+    s21_size_t appendLength = s21_strlen(append);
+    s21_size_t destLength = s21_strlen(dest);
+    s21_size_t resLength = destLength + appendLength;
+    char *result = calloc(resLength + 1, sizeof(char));
+    result[0] = '\0';
+    s21_strncat(result, dest, destLength);
+    s21_strncat(result, append, appendLength);
+    free(dest);
+    return result;
+}
+
+char* prepend(char* dest, char* append) {
+    s21_size_t appendLength = s21_strlen(append);
+    s21_size_t destLength = s21_strlen(dest);
+    s21_size_t resLength = destLength + appendLength;
+    char *result = calloc(resLength + 1, sizeof(char));
+    result[0] = '\0';
+    s21_strncat(result, append, appendLength);
+    s21_strncat(result, dest, destLength);
+    free(dest);
+    return result;
+}
+
+char* strWidth(char* str, int width, char sym, int isRight) {
+    s21_size_t length = s21_strlen(str);
+    width = width - length;
+    width = width < 0 ? 0 : width;
+
+    char* buff = repeat(sym, width);
+    char* result = calloc(length + width + 1, sizeof(char));
+    result[0] = '\0';
+
+    if (!isRight)
+        s21_strncat(result, buff, width);
+    s21_strncat(result, str, length);
+    if (isRight)
+        s21_strncat(result, buff, width);
+
+    if (buff)
+        free(buff);
+
+    free(str);
+
+    return result;
 }
