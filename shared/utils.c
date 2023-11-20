@@ -77,17 +77,17 @@ int intToStr(long long x, char str[], int d) {
     return i; 
 } 
  
-void ftoa(double n, char* res, int afterpoint) { 
-    int ipart = (int)n; 
+void s21_ftoa(double n, char* res, int afterpoint) { 
+    long long ipart = (int)n; 
  
-    double fpart = n - (double)ipart; 
+    long double fpart = (long double)n - (long double)ipart; 
  
-    int i = intToStr(ipart, res, 0); 
+    long long i = intToStr(ipart, res, 0); 
  
     if (afterpoint != 0) { 
         res[i] = '.';
  
-        double tmp = 10.0;
+        long double tmp = 10.0;
         for (int j = 0; j < afterpoint - 1; j++)
             tmp *= 10.0;
 
@@ -95,4 +95,34 @@ void ftoa(double n, char* res, int afterpoint) {
  
         intToStr((long long)fpart, res + i + 1, afterpoint); 
     } 
-} 
+}
+
+char* s21_uitoa(unsigned long int value, char* buffer, int base) {
+    if (base < 2 || base > 32) {
+        return buffer;
+    }
+ 
+    unsigned long int n = value;
+ 
+    int i = 0;
+    while (n) {
+        int r = n % base;
+ 
+        if (r >= 10) {
+            buffer[i++] = 65 + (r - 10);
+        }
+        else {
+            buffer[i++] = 48 + r;
+        }
+ 
+        n = n / base;
+    }
+ 
+    if (i == 0) {
+        buffer[i++] = '0';
+    }
+ 
+    buffer[i] = '\0';
+ 
+    return reverse(buffer, 0, i - 1);
+}
