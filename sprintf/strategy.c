@@ -4,9 +4,8 @@
 #include "../shared/utils.h"
 
 // TODO - Сделать обработку длины
-// TODO - Сделать обработку корректного типа
 TGetValueFromArg DecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
-    TGetValueFromArg result = {0, S21_NULL, 0};
+    TGetValueFromArg result = {S21_NULL, 0};
     char buff[30];
     s21_itoa(va_arg(*args, int), buff, 10);
     s21_size_t length = s21_strlen(buff);
@@ -19,9 +18,8 @@ TGetValueFromArg DecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
 
 
 // TODO - Сделать обработку длины
-// TODO - Сделать обработку корректного типа
 TGetValueFromArg UnsignedDecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
-    TGetValueFromArg result = {0, S21_NULL, 0};
+    TGetValueFromArg result = {S21_NULL, 0};
     char buff[30];
     s21_uitoa(va_arg(*args, unsigned long int), buff, 10);
     s21_size_t length = s21_strlen(buff);
@@ -33,9 +31,8 @@ TGetValueFromArg UnsignedDecimalStrategy(TStrFormatParse* PFormat, va_list *args
 }
 
 // TODO - Сделать обработку длины
-// TODO - Сделать обработку корректного типа
 TGetValueFromArg CharStrategy(TStrFormatParse* PFormat, va_list *args) {
-    TGetValueFromArg result = {0, S21_NULL, 0};
+    TGetValueFromArg result = {S21_NULL, 0};
     char arg = va_arg(*args, int);
     result.value = calloc(2, sizeof(char));
     result.value[0] = arg; result.value[1] = '\0';
@@ -44,30 +41,40 @@ TGetValueFromArg CharStrategy(TStrFormatParse* PFormat, va_list *args) {
 }
 
 // TODO - Сделать обработку длины
-// TODO - Сделать обработку корректного типа
 TGetValueFromArg StringStrategy(TStrFormatParse* PFormat, va_list *args) {
-    TGetValueFromArg result = {0, S21_NULL, 0};
+    TGetValueFromArg result = {S21_NULL, 0};
     char *arg = va_arg(*args, char*);
-    s21_size_t length = PFormat->precision < 0 ? s21_strlen(arg) : PFormat->precision;
-    result.value = calloc(length + 1, sizeof(char));
-    s21_strncat(result.value, arg, length);
-    result.length = length;
+
+    if (arg != S21_NULL) {
+        s21_size_t length = PFormat->precision < 0 ? s21_strlen(arg) : PFormat->precision;
+        result.value = calloc(length + 1, sizeof(char));
+        s21_strncat(result.value, arg, length);
+        result.length = length;
+    } else if (arg == S21_NULL && (PFormat->precision >= 6 || PFormat->precision < 0)) {
+        result.value = calloc(6 + 1, sizeof(char));
+        s21_strncat(result.value, "(null)", 6);
+        result.length = 6;
+    } else {
+        result.value = calloc(1, sizeof(char));
+        result.value[0] = '\0';
+        result.length = 0;
+    }
+    
     return result;
 }
 
 TGetValueFromArg PercentStrategy(TStrFormatParse* PFormat, va_list *args) {
-    TGetValueFromArg result = {0, S21_NULL, 1};
+    TGetValueFromArg result = {S21_NULL, 1};
     result.value = calloc(2, sizeof(char));
     result.value[0] = '%'; result.value[1] = '\0';
     return result;
 }
 
 // TODO - Сделать обработку длины
-// TODO - Сделать обработку корректного типа
 // TODO - Сделать точность мантисы как в оригинальном до 34 цифр в мантисе. 
 // На данном этапе последнее число мантисы не округляется. Происходит переполнение при определений точности
 TGetValueFromArg FloatStrategy(TStrFormatParse* PFormat, va_list *args) {
-    TGetValueFromArg result = {0, S21_NULL, 0};
+    TGetValueFromArg result = {S21_NULL, 0};
     char buff[50];
     s21_ftoa(va_arg(*args, double), buff, PFormat->precision);
     s21_size_t length = s21_strlen(buff);
@@ -79,30 +86,26 @@ TGetValueFromArg FloatStrategy(TStrFormatParse* PFormat, va_list *args) {
 }
 
 // TODO - Сделать обработку длины
-// TODO - Сделать обработку корректного типа
 TGetValueFromArg UnsignedHexadecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
-    TGetValueFromArg result = {0, S21_NULL, 0};
+    TGetValueFromArg result = {S21_NULL, 0};
     return result;
 }
 
 // TODO - Сделать обработку длины
-// TODO - Сделать обработку корректного типа
 TGetValueFromArg UnsignedUpperHexadecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
-    TGetValueFromArg result = {0, S21_NULL, 0};
+    TGetValueFromArg result = {S21_NULL, 0};
     return result;
 }
 
 // TODO - Сделать обработку длины
-// TODO - Сделать обработку корректного типа
 TGetValueFromArg UnsignedOctalStrategy(TStrFormatParse* PFormat, va_list *args) {
-    TGetValueFromArg result = {0, S21_NULL, 0};
+    TGetValueFromArg result = {S21_NULL, 0};
     return result;
 }
 
 // TODO - Сделать обработку длины
-// TODO - Сделать обработку корректного типа
 TGetValueFromArg PointerStrategy(TStrFormatParse* PFormat, va_list *args) {
-    TGetValueFromArg result = {0, S21_NULL, 0};
+    TGetValueFromArg result = {S21_NULL, 0};
     return result;
 }
 

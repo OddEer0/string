@@ -2,7 +2,6 @@
 #include <stdarg.h>
 
 typedef struct {
-    int isSuccessReadArg;
     char* value;
     int length;
 } TGetValueFromArg;

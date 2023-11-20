@@ -86,6 +86,10 @@ int printProccess(char *str, TStrFormatParse *PFormat, va_list *args, TGetValueF
 }
 
 int s21_sprintf(char *str, const char *format, ...) {
+    if (format == S21_NULL) {
+        return -1;
+    }
+
     int result = 0;
     va_list args;
     va_start(args, format);
