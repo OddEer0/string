@@ -4,6 +4,14 @@
 
 #include <stdio.h>
 
+long int labs(long int x) {
+    return x < 0 ? -x : x;
+}
+
+long int ulabs(unsigned long int x) {
+    return x < 0 ? -x : x;
+}
+
 void swap(char *x, char *y) {
     char t = *x; *x = *y; *y = t;
 }
@@ -21,29 +29,52 @@ char* s21_itoa(long int value, char* buffer, int base) {
         return buffer;
     }
  
-    int n = abs((int)value);
+    long $value = labs(value);
  
     int i = 0;
-    while (n) {
-        int r = n % base;
+    for (;$value; i++) {
+        int remainder = $value % base;
  
-        if (r >= 10) {
-            buffer[i++] = 65 + (r - 10);
-        }
-        else {
-            buffer[i++] = 48 + r;
-        }
+        if (remainder >= 10)
+            buffer[i] = 65 + (remainder - 10);
+        else
+            buffer[i] = 48 + remainder;
  
-        n = n / base;
+        $value /= base;
     }
  
-    if (i == 0) {
+    if (i == 0)
         buffer[i++] = '0';
+ 
+    if (value < 0 && base == 10)
+        buffer[i++] = '-';
+ 
+    buffer[i] = '\0';
+ 
+    return reverse(buffer, 0, i - 1);
+}
+
+char* s21_uitoa(unsigned long int value, char* buffer, int base) {
+    if (base < 2 || base > 32) {
+        return buffer;
     }
  
-    if (value < 0 && base == 10) {
-        buffer[i++] = '-';
+    unsigned long $value = ulabs(value);
+ 
+    int i = 0;
+    for (;$value; i++) {
+        int remainder = $value % base;
+ 
+        if (remainder >= 10)
+            buffer[i] = 65 + (remainder - 10);
+        else
+            buffer[i] = 48 + remainder;
+ 
+        $value /= base;
     }
+ 
+    if (i == 0)
+        buffer[i++] = '0';
  
     buffer[i] = '\0';
  
@@ -62,69 +93,59 @@ char *repeat(char sym, int count) {
     return result;
 }
 
-int intToStr(long long x, char str[], int d) { 
+int intToStr(long long int x, char str[], int afterpoint) { 
     int i = 0; 
-    while (x) { 
-        str[i++] = (x % 10) + '0'; 
-        x /= 10; 
-    } 
+    for (long long int j = x; j; j /= 10, i++)
+        str[i] = (j % 10) + '0';
  
-    while (i < d) 
-        str[i++] = '0'; 
+    for (; i < afterpoint; i++) 
+        str[i] = '0'; 
  
     reverse(str, 0, i - 1);
     str[i] = '\0';
     return i; 
 } 
  
-void s21_ftoa(double n, char* res, int afterpoint) { 
-    long long ipart = (int)n; 
+void s21_ftoa(long double n, char* res, int afterpoint) {
+    long long ipart = (long long)n;
+
+    printf("%lld\n", ipart);
  
-    long double fpart = (long double)n - (long double)ipart; 
+    long double fpart = n - (long double)ipart;
  
-    long long i = intToStr(ipart, res, 0); 
+    int length = intToStr(ipart, res, 0); 
  
     if (afterpoint != 0) { 
-        res[i] = '.';
- 
-        long double tmp = 10.0;
-        for (int j = 0; j < afterpoint - 1; j++)
-            tmp *= 10.0;
+        res[length] = '.';
+        length++;
 
-        fpart *= tmp; 
- 
-        intToStr((long long)fpart, res + i + 1, afterpoint); 
+        long double tmp = 0.0;
+        int tmpAfterpoint = afterpoint;
+        for (int j = 0; j < tmpAfterpoint; j++) {
+            if (tmp == 0.0) tmp = 10.0;
+            else tmp *= 10.0;
+
+            if (tmp >= 1000000.0) {
+                fpart *= tmp;
+                intToStr((int)fpart, res + length, 6);
+                length += 6;
+                fpart -= (int)fpart;
+                afterpoint -= 6;
+                tmp = 0.0;
+            }
+        }
+
+        if (tmp != 0.0) {
+            tmp = 10.0;
+            for (int i = 0; i < afterpoint - 1; i++)
+                tmp *= 10.0;
+            fpart *= tmp;
+
+            printf("%Lf\n", fpart);
+    
+            intToStr((long int)fpart, res + length, afterpoint); 
+        }
     } 
-}
-
-char* s21_uitoa(unsigned long int value, char* buffer, int base) {
-    if (base < 2 || base > 32) {
-        return buffer;
-    }
- 
-    unsigned long int n = value;
- 
-    int i = 0;
-    while (n) {
-        unsigned long int r = n % base;
- 
-        if (r >= 10) {
-            buffer[i++] = 65 + (r - 10);
-        }
-        else {
-            buffer[i++] = 48 + r;
-        }
- 
-        n = n / base;
-    }
- 
-    if (i == 0) {
-        buffer[i++] = '0';
-    }
- 
-    buffer[i] = '\0';
- 
-    return reverse(buffer, 0, i - 1);
 }
 
 char* append(char* dest, char* append) {

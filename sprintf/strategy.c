@@ -3,11 +3,15 @@
 #include <stdlib.h>
 #include "../shared/utils.h"
 
-// TODO - Сделать обработку длины
 TGetValueFromArg DecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {S21_NULL, 0};
     char buff[30];
-    s21_itoa(va_arg(*args, int), buff, 10);
+    if (PFormat->length == 'h')
+        s21_itoa((short)va_arg(*args, int), buff, 10);
+    else if (PFormat->length == 'l')
+        s21_itoa(va_arg(*args, long), buff, 10);
+    else
+        s21_itoa(va_arg(*args, int), buff, 10);
     s21_size_t length = s21_strlen(buff);
     result.value = calloc(length + 1, sizeof(char));
     result.value[0] = '\0';
@@ -17,11 +21,15 @@ TGetValueFromArg DecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
 }
 
 
-// TODO - Сделать обработку длины
 TGetValueFromArg UnsignedDecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {S21_NULL, 0};
     char buff[30];
-    s21_uitoa(va_arg(*args, unsigned long int), buff, 10);
+    if (PFormat->length == 'h')
+        s21_uitoa((unsigned short)va_arg(*args, unsigned int), buff, 10);
+    else if (PFormat->length == 'l')
+        s21_uitoa(va_arg(*args, unsigned long int), buff, 10);
+    else
+        s21_uitoa(va_arg(*args, unsigned int), buff, 10);
     s21_size_t length = s21_strlen(buff);
     result.value = calloc(length + 1, sizeof(char));
     result.value[0] = '\0';
@@ -73,10 +81,14 @@ TGetValueFromArg PercentStrategy(TStrFormatParse* PFormat, va_list *args) {
 // TODO - Сделать обработку длины
 // TODO - Сделать точность мантисы как в оригинальном до 34 цифр в мантисе. 
 // На данном этапе последнее число мантисы не округляется. Происходит переполнение при определений точности
+// В целом переполнение!!!
 TGetValueFromArg FloatStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {S21_NULL, 0};
     char buff[50];
-    s21_ftoa(va_arg(*args, double), buff, PFormat->precision);
+    if (PFormat->length == 'L')
+        s21_ftoa(va_arg(*args, long double), buff, PFormat->precision);
+    else
+        s21_ftoa(va_arg(*args, double), buff, PFormat->precision);
     s21_size_t length = s21_strlen(buff);
     result.value = calloc(length + 1, sizeof(char));
     result.value[0] = '\0';
