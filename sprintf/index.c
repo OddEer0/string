@@ -27,11 +27,17 @@ void widthInit(TStrFormatParse *PFormat, va_list *args) {
 }
 
 void numPrecision(TGetValueFromArg* arg, TStrFormatParse *PFormat) {
-    int isNegative = arg->value[0] == '-';    
+    int isNegative = arg->value[0] == '-';
     int length = arg->length - isNegative;
     int zeroCount = PFormat->precision - length;
+    if (PFormat->flags->zero && !PFormat->flags->minus)
+        zeroCount += PFormat->width - 1 - isNegative;
     char *buff = repeat('0', zeroCount);
     if (buff) {
+        if (isNegative) {
+            arg->value[0] = '0';
+            buff[0] = '-';
+        }
         arg->value = prepend(arg->value, buff);
         arg->length = s21_strlen(arg->value);
         free(buff);
@@ -77,7 +83,8 @@ int printProccess(char *str, TStrFormatParse *PFormat, va_list *args, TGetValueF
     if (isNum(PFormat->type))
         numPrecision(&arg, PFormat);
     sprintfFlagHandle(&arg, PFormat);
-    sprintfWidthHandle(&arg, PFormat);
+    if (!(PFormat->flags->zero && !PFormat->flags->minus))
+        sprintfWidthHandle(&arg, PFormat);
 
     s21_strncat(str, arg.value, arg.length);
 

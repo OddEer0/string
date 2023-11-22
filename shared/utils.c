@@ -8,10 +8,6 @@ long int labs(long int x) {
     return x < 0 ? -x : x;
 }
 
-long int ulabs(unsigned long int x) {
-    return x < 0 ? -x : x;
-}
-
 void swap(char *x, char *y) {
     char t = *x; *x = *y; *y = t;
 }
@@ -59,7 +55,7 @@ char* s21_uitoa(unsigned long int value, char* buffer, int base) {
         return buffer;
     }
  
-    unsigned long $value = ulabs(value);
+    unsigned long $value = value;
  
     int i = 0;
     for (;$value; i++) {
