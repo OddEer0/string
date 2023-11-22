@@ -1,15 +1,15 @@
 #include "../s21_string.h"
 #include <stdio.h>
 
-#define BUFF_SIZE 400
+#define BUFF_SIZE 500
 
 int main() {
-    char format[] = "all and testing %hd %d %ld %hu %u %lu status";
+    char format[] = "print: %o %ho %lo, %+o %+o % o %05o %0-5o %-5o %5o %.6o %#o";
 
     char buff[BUFF_SIZE];
     char buffOrig[BUFF_SIZE];
-    int result = sprintf(buffOrig, format, __SHRT_MAX__, __INT_MAX__, __LONG_MAX__, __UINT16_MAX__, __UINT32_MAX__, __UINT64_MAX__);
-    int resultC = s21_sprintf(buff, format, __SHRT_MAX__, __INT_MAX__, __LONG_MAX__, __UINT16_MAX__, __UINT32_MAX__, __UINT64_MAX__);
+    int result = sprintf(buff, format, __INT16_MAX__, __INT32_MAX__, __INT64_MAX__, 2, 2, 2, 23, 23, 23, 23, 20, 222);
+    int resultC = s21_sprintf(buffOrig, format, __INT16_MAX__, __INT32_MAX__, __INT64_MAX__, 2, 2, 2, 23, 23, 23, 23, 20, 222);
 
     printf("original: %s*\n", buffOrig);
     printf("custom  : %s*\n", buff);

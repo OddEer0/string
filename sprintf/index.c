@@ -53,14 +53,16 @@ void sprintfFlagHandle(TGetValueFromArg* arg, TStrFormatParse *PFormat) {
     
     if (!isNegative && isCorrectFlags)
         arg->value = prepend(arg->value, PFormat->flags->plus ? "+" : " ");
-    else if (!hasDot && isCorrectFlagDot)
-        arg->value = append(arg->value, ".");
-    else if (PFormat->type == 'o')
-        arg->value = prepend(arg->value, "0");
-    else if (PFormat->type == 'x')
-        arg->value = prepend(arg->value, "0x");
-    else if (PFormat->type == 'X')
-        arg->value = prepend(arg->value, "0X");
+    else if (PFormat->flags->jail) {
+        if (!hasDot && isCorrectFlagDot)
+            arg->value = append(arg->value, ".");
+        else if (PFormat->type == 'o')
+            arg->value = prepend(arg->value, "0");
+        else if (PFormat->type == 'x')
+            arg->value = prepend(arg->value, "0x");
+        else if (PFormat->type == 'X')
+            arg->value = prepend(arg->value, "0X");
+    } 
 
     arg->length = s21_strlen(arg->value);
 }

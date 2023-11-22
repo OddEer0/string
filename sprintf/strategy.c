@@ -3,6 +3,16 @@
 #include <stdlib.h>
 #include "../shared/utils.h"
 
+void to_lower_di(char* str) {
+    s21_size_t length = s21_strlen(str);
+
+    for (int i = 0; i < length; i++) {
+        if (str[i] <= 'Z' && str[i] >= 'A') {
+            str[i] += 32;
+        }
+    }
+}
+
 TGetValueFromArg DecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {S21_NULL, 0};
     char buff[30];
@@ -97,21 +107,45 @@ TGetValueFromArg FloatStrategy(TStrFormatParse* PFormat, va_list *args) {
     return result;
 }
 
-// TODO - Сделать обработку длины
-TGetValueFromArg UnsignedHexadecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
-    TGetValueFromArg result = {S21_NULL, 0};
-    return result;
-}
-
-// TODO - Сделать обработку длины
 TGetValueFromArg UnsignedUpperHexadecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {S21_NULL, 0};
+    char buff[30];
+    if (PFormat->length == 'h')
+        s21_uitoa((unsigned short)va_arg(*args, unsigned int), buff, 16);
+    else if (PFormat->length == 'l')
+        s21_uitoa(va_arg(*args, unsigned long int), buff, 16);
+    else
+        s21_uitoa(va_arg(*args, unsigned int), buff, 16);
+    s21_size_t length = s21_strlen(buff);
+    result.value = calloc(length + 1, sizeof(char));
+    result.value[0] = '\0';
+    s21_strncpy(result.value, buff, length);
+    result.length = length;
     return result;
 }
 
-// TODO - Сделать обработку длины
+TGetValueFromArg UnsignedHexadecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
+    TGetValueFromArg result = UnsignedUpperHexadecimalStrategy(PFormat, args);
+    to_lower_di(result.value);
+    return result;
+}
+
+// Segfault
 TGetValueFromArg UnsignedOctalStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {S21_NULL, 0};
+    char buff[100];
+    if (PFormat->length == 'h')
+        s21_uitoa((unsigned short)va_arg(*args, unsigned int), buff, 8);
+    else if (PFormat->length == 'l')
+        s21_uitoa(va_arg(*args, unsigned long int), buff, 8);
+    else
+        s21_uitoa(va_arg(*args, unsigned int), buff, 8);
+    to_lower_di(buff);
+    s21_size_t length = s21_strlen(buff);
+    result.value = calloc(length + 1, sizeof(char));
+    result.value[0] = '\0';
+    s21_strncpy(result.value, buff, length);
+    result.length = length;
     return result;
 }
 
