@@ -4,6 +4,7 @@
 #include "../shared/utils.h"
 #include <wchar.h>
 
+#include <stdio.h>
 
 void to_lower_di(char* str) {
     s21_size_t length = s21_strlen(str);
@@ -69,24 +70,41 @@ TGetValueFromArg CharStrategy(TStrFormatParse* PFormat, va_list *args) {
     return result;
 }
 
-// TODO - Сделать обработку длины
+void stringStrategyNullHandler(TGetValueFromArg* result, TStrFormatParse* PFormat) {
+    if (PFormat->precision >= 6 || PFormat->precision < 0) {
+        result->value = calloc(6 + 1, sizeof(char));
+        s21_strncat(result->value, "(null)", 6);
+        result->length = 6;
+    } else {
+        result->value = calloc(1, sizeof(char));
+        result->value[0] = '\0';
+        result->length = 0;
+    }
+}
+
 TGetValueFromArg StringStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {S21_NULL, 0};
-    char *arg = va_arg(*args, char*);
 
-    if (arg != S21_NULL) {
-        s21_size_t length = PFormat->precision < 0 ? s21_strlen(arg) : PFormat->precision;
-        result.value = calloc(length + 1, sizeof(char));
-        s21_strncat(result.value, arg, length);
-        result.length = length;
-    } else if (arg == S21_NULL && (PFormat->precision >= 6 || PFormat->precision < 0)) {
-        result.value = calloc(6 + 1, sizeof(char));
-        s21_strncat(result.value, "(null)", 6);
-        result.length = 6;
+    if (PFormat->length == 'l') {
+        wchar_t *arg = va_arg(*args, wchar_t*);
+        if (arg != S21_NULL) {
+            s21_size_t wcharSize = sizeof(wchar_t);
+            s21_size_t length = PFormat->precision < 0 ? wcslen(arg) : (int)(PFormat->precision / wcharSize);
+            result.value = calloc(length + 1, sizeof(wchar_t));
+            s21_size_t byteLength = wcharSize * length;
+            wcstombs(result.value, arg, byteLength);
+            result.length = byteLength;
+        } else
+            stringStrategyNullHandler(&result, PFormat);
     } else {
-        result.value = calloc(1, sizeof(char));
-        result.value[0] = '\0';
-        result.length = 0;
+        char *arg = va_arg(*args, char*);
+        if (arg != S21_NULL) {
+            s21_size_t length = PFormat->precision < 0 ? s21_strlen(arg) : PFormat->precision;
+            result.value = calloc(length + 1, sizeof(char));
+            s21_strncat(result.value, arg, length);
+            result.length = length;
+        } else
+            stringStrategyNullHandler(&result, PFormat);
     }
     
     return result;

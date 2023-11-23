@@ -9,7 +9,7 @@ test: string/string.c __test__/*.c sprintf/strategy.c sprintf/index.c shared/*.c
 	$(CC) $(CFLAGS) $^ -o $@ $(GCOV_FLAGS) $(CHECK_FLAGS)
 
 eztest: string/string.c __test__/*.c sprintf/strategy.c sprintf/index.c shared/*.c
-	$(CC) $^ -o $@ $(GCOV_FLAGS) $(CHECK_FLAGS)
+	$(CC) -std=c11 $^ -o $@ $(GCOV_FLAGS) $(CHECK_FLAGS)
 	./eztest
 
 watch: clean s21_string.a test

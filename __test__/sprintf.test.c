@@ -89,8 +89,20 @@ START_TEST(c_specifier_testing) {
 }
 END_TEST
 
+START_TEST(s_specifier_testing) {
+    setlocale(LC_ALL, "");
+    char result[400];
+    char result2[400];
+    char format[] = "print: %s % s %#s %-s %+s %5s %-5s %.3s %ls % ls %#ls %-ls %+ls %5ls %-5ls %.3ls %s %.3s %ls %.3ls lol";
+    int printCount = sprintf(result, format, "league", "league", "league", "league", "league", "league", "league", "league", L"😁こんにちは日本", L"😁こんにちは日本", L"😁こんにちは日本", L"😁こんにちは日本",L"😁こんにちは日本", L"😁こんにちは日本", L"😁こんにちは日本", L"😁こんにちは日本", NULL, NULL, NULL, NULL);
+    int printCount2 = s21_sprintf(result2, format, "league", "league", "league", "league", "league", "league", "league", "league", L"😁こんにちは日本", L"😁こんにちは日本", L"😁こんにちは日本", L"😁こんにちは日本",L"😁こんにちは日本", L"😁こんにちは日本", L"😁こんにちは日本", L"😁こんにちは日本", NULL, NULL, NULL, NULL);
+    ck_assert_str_eq(result, result2);
+    ck_assert_int_eq(printCount, printCount2);
+}
+END_TEST
+
 Suite *sprintf_suite() {
-    TCase *d_specifier, *u_specifier, *x_specifier, *X_specifier, *o_specifier, *percent_specifier, *c_specifier;
+    TCase *d_specifier, *u_specifier, *x_specifier, *X_specifier, *o_specifier, *percent_specifier, *c_specifier, *s_specifier;
     Suite *s = suite_create("sprintf");
 
     d_specifier = tcase_create("d specifier testing");
@@ -120,6 +132,10 @@ Suite *sprintf_suite() {
     c_specifier = tcase_create("c specifier testing");
     tcase_add_test(c_specifier, c_specifier_testing);
     suite_add_tcase(s, c_specifier);
+
+    s_specifier = tcase_create("c specifier testing");
+    tcase_add_test(s_specifier, s_specifier_testing);
+    suite_add_tcase(s, s_specifier);
 
     return s;
 }
