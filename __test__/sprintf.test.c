@@ -1,6 +1,7 @@
 #include "main.h"
 #include "../s21_string.h"
 #include "string.h"
+#include "locale.h"
 
 #include <stdio.h>
 
@@ -76,8 +77,20 @@ START_TEST(percent_specifier_testing) {
 }
 END_TEST
 
+START_TEST(c_specifier_testing) {
+    setlocale(LC_ALL, "");
+    char result[400];
+    char result2[400];
+    char format[] = "print: %c %5c %.20c %+c %-5c %#c % c %0c %lc %5c %.20c %+c %-5c %#c % c %0c lol";
+    int printCount = sprintf(result, format, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', L'ん', L'ん', L'ん', L'ん', L'ん', L'ん', L'ん', L'ん');
+    int printCount2 = s21_sprintf(result2, format, 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', L'ん', L'ん', L'ん', L'ん', L'ん', L'ん', L'ん', L'ん');
+    ck_assert_str_eq(result, result2);
+    ck_assert_int_eq(printCount, printCount2);
+}
+END_TEST
+
 Suite *sprintf_suite() {
-    TCase *d_specifier, *u_specifier, *x_specifier, *X_specifier, *o_specifier, *percent_specifier;
+    TCase *d_specifier, *u_specifier, *x_specifier, *X_specifier, *o_specifier, *percent_specifier, *c_specifier;
     Suite *s = suite_create("sprintf");
 
     d_specifier = tcase_create("d specifier testing");
@@ -103,6 +116,10 @@ Suite *sprintf_suite() {
     percent_specifier = tcase_create("percent specifier testing");
     tcase_add_test(percent_specifier, percent_specifier_testing);
     suite_add_tcase(s, percent_specifier);
+
+    c_specifier = tcase_create("c specifier testing");
+    tcase_add_test(c_specifier, c_specifier_testing);
+    suite_add_tcase(s, c_specifier);
 
     return s;
 }

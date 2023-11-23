@@ -56,10 +56,9 @@ TGetValueFromArg CharStrategy(TStrFormatParse* PFormat, va_list *args) {
 
     if (PFormat->length == 'l') {
         wint_t arg = va_arg(*args, wint_t);
-        result.value = calloc(2, sizeof(wchar_t));
-        wchar_t temp[2] = {L'\0'};
-        temp[0] = arg;
-        wcstombs(result.value, temp, 2);
+        result.value = calloc(2, sizeof(wint_t));
+        wint_t temp[2] = {arg, L'\0'};
+        wcstombs(result.value, temp, sizeof(wint_t));
         result.length = sizeof(wint_t);
     } else {
         char arg = va_arg(*args, int);
