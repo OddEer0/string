@@ -2,6 +2,8 @@
 #include "../s21_string.h"
 #include <stdlib.h>
 #include "../shared/utils.h"
+#include <wchar.h>
+
 
 void to_lower_di(char* str) {
     s21_size_t length = s21_strlen(str);
@@ -51,10 +53,20 @@ TGetValueFromArg UnsignedDecimalStrategy(TStrFormatParse* PFormat, va_list *args
 // TODO - Сделать обработку длины
 TGetValueFromArg CharStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {S21_NULL, 0};
-    char arg = va_arg(*args, int);
-    result.value = calloc(2, sizeof(char));
-    result.value[0] = arg; result.value[1] = '\0';
-    result.length = 1;
+
+    if (PFormat->length == 'l') {
+        wint_t arg = va_arg(*args, wint_t);
+        result.value = calloc(2, sizeof(wchar_t));
+        wchar_t temp[2] = {L'\0'};
+        temp[0] = arg;
+        wcstombs(result.value, temp, 2);
+        result.length = sizeof(wint_t);
+    } else {
+        char arg = va_arg(*args, int);
+        result.value = calloc(2, sizeof(char));
+        result.value[0] = arg; result.value[1] = '\0';
+        result.length = 1;
+    }
     return result;
 }
 
@@ -88,10 +100,6 @@ TGetValueFromArg PercentStrategy(TStrFormatParse* PFormat, va_list *args) {
     return result;
 }
 
-// TODO - Сделать обработку длины
-// TODO - Сделать точность мантисы как в оригинальном до 34 цифр в мантисе. 
-// На данном этапе последнее число мантисы не округляется. Происходит переполнение при определений точности
-// В целом переполнение!!!
 TGetValueFromArg FloatStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {S21_NULL, 0};
     char buff[50];

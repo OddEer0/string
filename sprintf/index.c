@@ -2,8 +2,6 @@
 #include "../shared/utils.h"
 #include <stdlib.h>
 
-#include <stdio.h>
-
 int isNum(char specifier) {
     return !!s21_strchr("douxX", specifier);
 }
