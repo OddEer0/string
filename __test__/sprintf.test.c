@@ -65,8 +65,19 @@ START_TEST(o_specifier_testing) {
 }
 END_TEST
 
+START_TEST(percent_specifier_testing) {
+    char result[400];
+    char result2[400];
+    char format[] = "print: %% %#% %-020.10% %.10l% %10h% % #L% %d";
+    int printCount = sprintf(result, format, 232);
+    int printCount2 = s21_sprintf(result2, format, 232);
+    ck_assert_str_eq(result, result2);
+    ck_assert_int_eq(printCount, printCount2);
+}
+END_TEST
+
 Suite *sprintf_suite() {
-    TCase *d_specifier, *u_specifier, *x_specifier, *X_specifier, *o_specifier;
+    TCase *d_specifier, *u_specifier, *x_specifier, *X_specifier, *o_specifier, *percent_specifier;
     Suite *s = suite_create("sprintf");
 
     d_specifier = tcase_create("d specifier testing");
@@ -88,6 +99,10 @@ Suite *sprintf_suite() {
     o_specifier = tcase_create("o specifier testing");
     tcase_add_test(o_specifier, o_specifier_testing);
     suite_add_tcase(s, o_specifier);
+
+    percent_specifier = tcase_create("percent specifier testing");
+    tcase_add_test(percent_specifier, percent_specifier_testing);
+    suite_add_tcase(s, percent_specifier);
 
     return s;
 }

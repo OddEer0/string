@@ -85,8 +85,9 @@ int printProccess(char *str, TStrFormatParse *PFormat, va_list *args, TGetValueF
     if (isNum(PFormat->type))
         numPrecision(&arg, PFormat);
     sprintfFlagHandle(&arg, PFormat);
-    if (!(PFormat->flags->zero && !PFormat->flags->minus))
+    if (!(PFormat->flags->zero && !PFormat->flags->minus) && PFormat->type != '%')
         sprintfWidthHandle(&arg, PFormat);
+
 
     s21_strncat(str, arg.value, arg.length);
 

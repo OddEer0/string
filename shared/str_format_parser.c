@@ -76,7 +76,7 @@ int strFormatParser(char* format, TStrFormatParse* strFormatParse) {
     char *tmp = format + 1;
     int length = 0;
 
-    if (isFormat(*tmp) || *tmp == '\0') {
+    if (*tmp == '\0') {
         strFormatParse->isIgnore = 1;
         return 0;
     }
