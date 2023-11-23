@@ -155,7 +155,6 @@ TGetValueFromArg UnsignedHexadecimalStrategy(TStrFormatParse* PFormat, va_list *
     return result;
 }
 
-// Segfault
 TGetValueFromArg UnsignedOctalStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {S21_NULL, 0};
     char buff[100];

@@ -10,12 +10,12 @@
 int main() {
     setlocale(LC_ALL, "");
     // char format[] = "print: %% %#% %-020.10% %.10l% %10h% % #L% %d";
-    char format[] = "print: %.3ls lol";
+    char format[] = "print: %lo lol";
 
     char buff[BUFF_SIZE];
     char buffOrig[BUFF_SIZE];
-    int result = sprintf(buffOrig, format, L"😁こんにちは日本");
-    int resultC = s21_sprintf(buff, format, L"😁こんにちは日本");
+    int result = sprintf(buffOrig, format, 8);
+    int resultC = s21_sprintf(buff, format, 8);
 
     printf("original: %s*\n", buffOrig);
     printf("custom  : %s*\n", buff);
