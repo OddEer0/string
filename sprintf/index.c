@@ -44,7 +44,7 @@ void numPrecision(TGetValueFromArg* arg, TStrFormatParse *PFormat) {
 
 
 void sprintfFlagHandle(TGetValueFromArg* arg, TStrFormatParse *PFormat) {
-    int isCorrectFlags = !!s21_strchr("d", PFormat->type) && (PFormat->flags->plus || PFormat->flags->space);
+    int isCorrectFlags = !!s21_strchr("df", PFormat->type) && (PFormat->flags->plus || PFormat->flags->space);
     int isNegative = arg->value[0] == '-';
     int hasDot = !!s21_strchr(arg->value, '.');
     int isCorrectFlagDot = !!s21_strchr("aAeEfFgG", PFormat->type);

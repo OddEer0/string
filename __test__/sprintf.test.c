@@ -101,8 +101,25 @@ START_TEST(s_specifier_testing) {
 }
 END_TEST
 
+START_TEST(f_specifier_testing) {
+    char result[400];
+    char result2[400];
+    char format[] = "print: %.*f %5f %-5f %0f % f %+f %#f %.1f %.10f %.23f %#.0f %lf %f lol";
+    int printCount = sprintf(result, format, 4, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 100000000000.0, 50.0);
+    int printCount2 = s21_sprintf(result2, format, 4, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 100000000000.0, 50.0);
+    char result3[400];
+    char result4[400];
+    int printCount3 = sprintf(result3, format, 4, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0);
+    int printCount4 = s21_sprintf(result4, format, 4, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0, -50.0);
+    ck_assert_str_eq(result, result2);
+    ck_assert_str_eq(result3, result4);
+    ck_assert_int_eq(printCount, printCount2);
+    ck_assert_int_eq(printCount3, printCount4);
+}
+END_TEST
+
 Suite *sprintf_suite() {
-    TCase *d_specifier, *u_specifier, *x_specifier, *X_specifier, *o_specifier, *percent_specifier, *c_specifier, *s_specifier;
+    TCase *d_specifier, *u_specifier, *x_specifier, *X_specifier, *o_specifier, *percent_specifier, *c_specifier, *s_specifier, *f_specifier;
     Suite *s = suite_create("sprintf");
 
     d_specifier = tcase_create("d specifier testing");
@@ -136,6 +153,10 @@ Suite *sprintf_suite() {
     s_specifier = tcase_create("c specifier testing");
     tcase_add_test(s_specifier, s_specifier_testing);
     suite_add_tcase(s, s_specifier);
+
+    f_specifier = tcase_create("f specifier testing");
+    tcase_add_test(f_specifier, f_specifier_testing);
+    suite_add_tcase(s, f_specifier);
 
     return s;
 }

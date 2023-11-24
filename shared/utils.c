@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include "../s21_string.h"
 
-#include <stdio.h>
-
 long int labs(long int x) {
+    return x < 0 ? -x : x;
+}
+
+long long llabs(long long int x) {
     return x < 0 ? -x : x;
 }
 
@@ -90,12 +92,19 @@ char *repeat(char sym, int count) {
 }
 
 int intToStr(long long int x, char str[], int afterpoint) { 
-    int i = 0; 
-    for (long long int j = x; j; j /= 10, i++)
+    int i = 0;
+    int isNegative = x < 0;
+
+    long long $value = llabs(x);
+
+    for (long long int j = $value; j; j /= 10, i++)
         str[i] = (j % 10) + '0';
  
     for (; i < afterpoint; i++) 
-        str[i] = '0'; 
+        str[i] = '0';
+
+    if (isNegative)
+        str[i++] = '-'; 
  
     reverse(str, 0, i - 1);
     str[i] = '\0';
@@ -105,8 +114,6 @@ int intToStr(long long int x, char str[], int afterpoint) {
 void s21_ftoa(long double n, char* res, int afterpoint) {
     long long ipart = (long long)n;
 
-    printf("%lld\n", ipart);
- 
     long double fpart = n - (long double)ipart;
  
     int length = intToStr(ipart, res, 0); 
@@ -137,8 +144,6 @@ void s21_ftoa(long double n, char* res, int afterpoint) {
                 tmp *= 10.0;
             fpart *= tmp;
 
-            printf("%Lf\n", fpart);
-    
             intToStr((long int)fpart, res + length, afterpoint); 
         }
     } 
