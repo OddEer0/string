@@ -118,8 +118,19 @@ START_TEST(f_specifier_testing) {
 }
 END_TEST
 
+START_TEST(p_specifier_testing) {
+    char result[400];
+    char result2[400];
+    char format[] = "print: %p %#p %05p %-5p %+p % p %5p %.20p";
+    int printCount = sprintf(result, format, result, result, result, result, result, result, result, result);
+    int printCount2 = s21_sprintf(result2, format, result, result, result, result, result, result, result, result);
+    ck_assert_str_eq(result, result2);
+    ck_assert_int_eq(printCount, printCount2);
+}
+END_TEST
+
 Suite *sprintf_suite() {
-    TCase *d_specifier, *u_specifier, *x_specifier, *X_specifier, *o_specifier, *percent_specifier, *c_specifier, *s_specifier, *f_specifier;
+    TCase *d_specifier, *u_specifier, *x_specifier, *X_specifier, *o_specifier, *percent_specifier, *c_specifier, *s_specifier, *f_specifier, *p_specifier;
     Suite *s = suite_create("sprintf");
 
     d_specifier = tcase_create("d specifier testing");
@@ -157,6 +168,10 @@ Suite *sprintf_suite() {
     f_specifier = tcase_create("f specifier testing");
     tcase_add_test(f_specifier, f_specifier_testing);
     suite_add_tcase(s, f_specifier);
+
+    p_specifier = tcase_create("p specifier testing");
+    tcase_add_test(p_specifier, p_specifier_testing);
+    suite_add_tcase(s, p_specifier);
 
     return s;
 }

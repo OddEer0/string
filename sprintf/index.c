@@ -15,6 +15,8 @@ void precisionInit(TStrFormatParse *PFormat, va_list *args) {
     if (PFormat->precision < 0) {
         if (isNum(PFormat->type))
             PFormat->precision = 1;
+            if (PFormat->type == 'p')
+                PFormat->precision = -1;
         else if (isFloat(PFormat->type))
             PFormat->precision = 6;
     }
@@ -28,8 +30,6 @@ void numPrecision(TGetValueFromArg* arg, TStrFormatParse *PFormat) {
     int isNegative = arg->value[0] == '-';
     int length = arg->length - isNegative;
     int zeroCount = PFormat->precision - length;
-    if (PFormat->type == 'p')
-        zeroCount -= 2;
     if (PFormat->flags->zero && !PFormat->flags->minus)
         zeroCount += PFormat->width - 1 - isNegative;
     char *buff = repeat('0', zeroCount);
