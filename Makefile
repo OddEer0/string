@@ -23,12 +23,16 @@ ezsprint:
 	$(CC) string/string.c shared/str_format_parser.c shared/utils.c sprintf/index.c sprintf/strategy.c sprintf/main.c -o sprint
 	./sprint
 
+ezscanf:
+	$(CC) sscanf/main.c -o sscan
+	./sscan
+
 s21_string.a:
 	$(CC) $(CFLAGS) -c string/string.c -o string.o
 	$(CC) $(CFLAGS) -c shared/utils.c -o utils.o
 	$(CC) $(CFLAGS) -c shared/str_format_parser.c -o str_format_parser.o
 	$(CC) $(CFLAGS) -c sprintf/index.c -o sprintf.o
-	# $(CC) $(CFLAGS) -c sprintf/strategy.c -o sprintf_strategy.o
+	$(CC) $(CFLAGS) -c sprintf/strategy.c -o sprintf_strategy.o
 	ar rcs $@ *.o
 
 gcov_report:
