@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 int isNum(char specifier) {
-    return !!s21_strchr("douxX", specifier);
+    return !!s21_strchr("douxXp", specifier);
 }
 
 int isFloat(char specifier) {
@@ -28,6 +28,8 @@ void numPrecision(TGetValueFromArg* arg, TStrFormatParse *PFormat) {
     int isNegative = arg->value[0] == '-';
     int length = arg->length - isNegative;
     int zeroCount = PFormat->precision - length;
+    if (PFormat->type == 'p')
+        zeroCount -= 2;
     if (PFormat->flags->zero && !PFormat->flags->minus)
         zeroCount += PFormat->width - 1 - isNegative;
     char *buff = repeat('0', zeroCount);
@@ -44,23 +46,24 @@ void numPrecision(TGetValueFromArg* arg, TStrFormatParse *PFormat) {
 
 
 void sprintfFlagHandle(TGetValueFromArg* arg, TStrFormatParse *PFormat) {
-    int isCorrectFlags = !!s21_strchr("df", PFormat->type) && (PFormat->flags->plus || PFormat->flags->space);
+    int isCorrectFlags = !!s21_strchr("dfp", PFormat->type) && (PFormat->flags->plus || PFormat->flags->space);
     int isNegative = arg->value[0] == '-';
     int hasDot = !!s21_strchr(arg->value, '.');
     int isCorrectFlagDot = !!s21_strchr("aAeEfFgG", PFormat->type);
     
-    if (!isNegative && isCorrectFlags)
-        arg->value = prepend(arg->value, PFormat->flags->plus ? "+" : " ");
-    else if (PFormat->flags->jail) {
+    if (PFormat->flags->jail || PFormat->type == 'p') {
         if (!hasDot && isCorrectFlagDot)
             arg->value = append(arg->value, ".");
         else if (PFormat->type == 'o')
             arg->value = prepend(arg->value, "0");
-        else if (PFormat->type == 'x')
+        else if (PFormat->type == 'x' || PFormat->type == 'p')
             arg->value = prepend(arg->value, "0x");
         else if (PFormat->type == 'X')
             arg->value = prepend(arg->value, "0X");
     } 
+
+    if (!isNegative && isCorrectFlags)
+        arg->value = prepend(arg->value, PFormat->flags->plus ? "+" : " ");
 
     arg->length = s21_strlen(arg->value);
 }
@@ -69,7 +72,7 @@ void sprintfWidthHandle(TGetValueFromArg* arg, TStrFormatParse *PFormat) {
     arg->value = strWidth(
         arg->value,
         PFormat->width,
-        !PFormat->flags->minus && PFormat->flags->zero ? '0' : ' ',
+        !PFormat->flags->minus && PFormat->flags->zero && !PFormat->type == 'c' ? '0' : ' ',
         PFormat->flags->minus ? 1 : 0
     );
     arg->length = s21_strlen(arg->value);
@@ -83,7 +86,7 @@ int printProccess(char *str, TStrFormatParse *PFormat, va_list *args, TGetValueF
     if (isNum(PFormat->type))
         numPrecision(&arg, PFormat);
     sprintfFlagHandle(&arg, PFormat);
-    if (!(PFormat->flags->zero && !PFormat->flags->minus) && PFormat->type != '%')
+    if ((!(PFormat->flags->zero && !PFormat->flags->minus) || !isNum(PFormat->type)) && PFormat->type != '%')
         sprintfWidthHandle(&arg, PFormat);
 
 
