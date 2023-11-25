@@ -10,6 +10,14 @@ long long llabs(long long int x) {
     return x < 0 ? -x : x;
 }
 
+long long ldfloor(long double x) {
+    return (long long)x;
+}
+
+long double getMantis(long double x) {
+    return x - ldfloor(x);
+}
+
 void swap(char *x, char *y) {
     char t = *x; *x = *y; *y = t;
 }
@@ -111,42 +119,52 @@ int intToStr(long long int x, char str[], int afterpoint) {
     return i; 
 } 
  
-void s21_ftoa(long double n, char* res, int afterpoint) {
-    long long ipart = (long long)n;
+void s21_ftoa(long double value, char* buff, int afterpoint) {
+    long long decimalPart = ldfloor(value);
+    long double mantisPart = getMantis(value);
+    int length = 0;
+    char temp[40] = "";
+    buff[0] = '\0';
 
-    long double fpart = n - (long double)ipart;
- 
-    int length = intToStr(ipart, res, 0); 
- 
-    if (afterpoint != 0) { 
-        res[length] = '.';
+    if (afterpoint > 0) {
         length++;
+        temp[0] = '.';
+        int beforeResetCount = 0, $afterpoint = afterpoint;
+        for (int i = 0; i < afterpoint; i++, beforeResetCount++) {
+            mantisPart *= 10.0;
 
-        long double tmp = 0.0;
-        int tmpAfterpoint = afterpoint;
-        for (int j = 0; j < tmpAfterpoint; j++) {
-            if (tmp == 0.0) tmp = 10.0;
-            else tmp *= 10.0;
+            if (beforeResetCount >= 5) {
+                beforeResetCount = -1;
 
-            if (tmp >= 1000000.0) {
-                fpart *= tmp;
-                intToStr((int)fpart, res + length, 6);
+                intToStr((long long)mantisPart, temp + length, 6);
                 length += 6;
-                fpart -= (int)fpart;
-                afterpoint -= 6;
-                tmp = 0.0;
+                $afterpoint -= 6;
+                mantisPart = getMantis(mantisPart);
             }
         }
-
-        if (tmp != 0.0) {
-            tmp = 10.0;
-            for (int i = 0; i < afterpoint - 1; i++)
-                tmp *= 10.0;
-            fpart *= tmp;
-
-            intToStr((long int)fpart, res + length, afterpoint); 
+        int isRound = 0;
+        if (ldfloor(mantisPart * 10) % 10 >= 5)
+            isRound = 1;
+        if (beforeResetCount) {
+            intToStr((long long)mantisPart, temp + length, $afterpoint);
+            length += beforeResetCount;
         }
-    } 
+
+        for (int i = length - 1; i && isRound; i--) {
+            temp[i]++;
+            if (temp[i] > '9')
+                temp[i] = '0';
+            else
+                isRound = 0;
+        }
+
+        if (isRound)
+            decimalPart++;
+    }
+
+    intToStr(decimalPart, buff, 0);
+
+    s21_strncat(buff, temp, length);
 }
 
 char* append(char* dest, char* append) {

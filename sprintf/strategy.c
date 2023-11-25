@@ -173,7 +173,6 @@ TGetValueFromArg UnsignedOctalStrategy(TStrFormatParse* PFormat, va_list *args) 
     return result;
 }
 
-// TODO - Сделать обработку длины
 TGetValueFromArg PointerStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {S21_NULL, 0};
     char buff[30];
