@@ -13,11 +13,11 @@ int isFloat(char specifier) {
 void precisionInit(TStrFormatParse *PFormat, va_list *args) {
     PFormat->precision = PFormat->precisionStar ? va_arg(*args, int) : PFormat->precision;
     if (PFormat->precision < 0) {
-        if (isNum(PFormat->type))
+        if (isNum(PFormat->type)) {
             PFormat->precision = 1;
             if (PFormat->type == 'p')
                 PFormat->precision = -1;
-        else if (isFloat(PFormat->type))
+        } else if (isFloat(PFormat->type))
             PFormat->precision = 6;
     }
 }
@@ -72,7 +72,7 @@ void sprintfWidthHandle(TGetValueFromArg* arg, TStrFormatParse *PFormat) {
     arg->value = strWidth(
         arg->value,
         PFormat->width,
-        !PFormat->flags->minus && PFormat->flags->zero && !PFormat->type == 'c' ? '0' : ' ',
+        !PFormat->flags->minus && PFormat->flags->zero && PFormat->type != 'c' ? '0' : ' ',
         PFormat->flags->minus ? 1 : 0
     );
     arg->length = s21_strlen(arg->value);

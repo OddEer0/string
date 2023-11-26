@@ -9,7 +9,7 @@
 void to_lower_di(char* str) {
     s21_size_t length = s21_strlen(str);
 
-    for (int i = 0; i < length; i++) {
+    for (s21_size_t i = 0; i < length; i++) {
         if (str[i] <= 'Z' && str[i] >= 'A') {
             str[i] += 32;
         }
@@ -59,7 +59,7 @@ TGetValueFromArg CharStrategy(TStrFormatParse* PFormat, va_list *args) {
         wint_t arg = va_arg(*args, wint_t);
         result.value = calloc(2, sizeof(wint_t));
         wint_t temp[2] = {arg, L'\0'};
-        wcstombs(result.value, temp, sizeof(wint_t));
+        wcstombs(result.value, (wchar_t*)temp, sizeof(wint_t));
         result.length = sizeof(wint_t);
     } else {
         char arg = va_arg(*args, int);
@@ -89,7 +89,7 @@ TGetValueFromArg StringStrategy(TStrFormatParse* PFormat, va_list *args) {
         wchar_t *arg = va_arg(*args, wchar_t*);
         if (arg != S21_NULL) {
             s21_size_t wcharSize = sizeof(wchar_t);
-            s21_size_t length = PFormat->precision < 0 ? wcslen(arg) : (int)(PFormat->precision / wcharSize);
+            s21_size_t length = PFormat->precision < 0 ? wcslen(arg) : (s21_size_t)(PFormat->precision / wcharSize);
             result.value = calloc(length + 1, sizeof(wchar_t));
             s21_size_t byteLength = wcharSize * length;
             wcstombs(result.value, arg, byteLength);
@@ -99,7 +99,7 @@ TGetValueFromArg StringStrategy(TStrFormatParse* PFormat, va_list *args) {
     } else {
         char *arg = va_arg(*args, char*);
         if (arg != S21_NULL) {
-            s21_size_t length = PFormat->precision < 0 ? s21_strlen(arg) : PFormat->precision;
+            s21_size_t length = PFormat->precision < 0 ? s21_strlen(arg) : (s21_size_t)PFormat->precision;
             result.value = calloc(length + 1, sizeof(char));
             s21_strncat(result.value, arg, length);
             result.length = length;
@@ -111,6 +111,7 @@ TGetValueFromArg StringStrategy(TStrFormatParse* PFormat, va_list *args) {
 }
 
 TGetValueFromArg PercentStrategy(TStrFormatParse* PFormat, va_list *args) {
+    (void)args; (void)PFormat;
     TGetValueFromArg result = {S21_NULL, 1};
     result.value = calloc(2, sizeof(char));
     result.value[0] = '%'; result.value[1] = '\0';
@@ -121,9 +122,9 @@ TGetValueFromArg FloatStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {S21_NULL, 0};
     char buff[50];
     if (PFormat->length == 'L')
-        s21_ftoa(va_arg(*args, long double), buff, PFormat->precision);
+        s21_ftoa(va_arg(*args, long double), buff, PFormat->precision, 0);
     else
-        s21_ftoa(va_arg(*args, double), buff, PFormat->precision);
+        s21_ftoa(va_arg(*args, double), buff, PFormat->precision, 0);
     s21_size_t length = s21_strlen(buff);
     result.value = calloc(length + 1, sizeof(char));
     result.value[0] = '\0';
@@ -174,6 +175,7 @@ TGetValueFromArg UnsignedOctalStrategy(TStrFormatParse* PFormat, va_list *args) 
 }
 
 TGetValueFromArg PointerStrategy(TStrFormatParse* PFormat, va_list *args) {
+    (void)PFormat;
     TGetValueFromArg result = {S21_NULL, 0};
     char buff[30];
     s21_uitoa((unsigned long int)va_arg(*args, void*), buff, 16);
@@ -183,6 +185,55 @@ TGetValueFromArg PointerStrategy(TStrFormatParse* PFormat, va_list *args) {
     result.value[0] = '\0';
     s21_strncpy(result.value, buff, length);
     result.length = length;
+    return result;
+}
+
+TGetValueFromArg ScienceUpperFloatStrategy(TStrFormatParse* PFormat, va_list *args) {
+    TGetValueFromArg result = {S21_NULL, 0};
+    char buff[50];
+    if (PFormat->length == 'L')
+        s21_ftoa(va_arg(*args, long double), buff, PFormat->precision, 1);
+    else
+        s21_ftoa(va_arg(*args, double), buff, PFormat->precision, 1);
+    s21_size_t length = s21_strlen(buff);
+    result.value = calloc(length + 1, sizeof(char));
+    result.value[0] = '\0';
+    s21_strncpy(result.value, buff, length);
+    result.length = length;
+    return result;
+}
+
+TGetValueFromArg ScienceFloatStrategy(TStrFormatParse* PFormat, va_list *args) {
+    TGetValueFromArg result = ScienceUpperFloatStrategy(PFormat, args);
+    to_lower_di(result.value);
+    return result;
+}
+
+TGetValueFromArg ScienceShortUpperFloatStrategy(TStrFormatParse* PFormat, va_list *args) {
+    TGetValueFromArg result = {S21_NULL, 0};
+    char buff[50], buff2[50];
+    if (PFormat->length == 'L') {
+        long double val = va_arg(*args, long double);
+        s21_ftoa(val, buff, 2, 0);
+        s21_ftoa(val, buff2, PFormat->precision, 1);
+    } else {
+        double val = va_arg(*args, double);
+        s21_ftoa(val, buff, 2, 0);
+        s21_ftoa(val, buff2, PFormat->precision, 1);
+    }
+    s21_size_t length2 = s21_strlen(buff);
+    s21_size_t length3 = s21_strlen(buff2);
+    s21_size_t length = length3 >= length2 ? length2 : length3;
+    result.value = calloc(length + 1, sizeof(char));
+    result.value[0] = '\0';
+    s21_strncpy(result.value, length3 >= length2 ? buff : buff2, length);
+    result.length = length;
+    return result;
+}
+
+TGetValueFromArg ScienceShortFloatStrategy(TStrFormatParse* PFormat, va_list *args) {
+    TGetValueFromArg result = ScienceShortUpperFloatStrategy(PFormat, args);
+    to_lower_di(result.value);
     return result;
 }
 
@@ -221,16 +272,16 @@ TGetValueFromArgStrategy getValueFromArgStrategyBySpecifier(char specifier) {
             result = UnsignedUpperHexadecimalStrategy;
             break;
         case 'e':
-            result = S21_NULL;
+            result = ScienceFloatStrategy;
             break;
         case 'E':
-            result = S21_NULL;
+            result = ScienceUpperFloatStrategy;
             break;
         case 'g':
-            result = S21_NULL;
+            result = ScienceShortFloatStrategy;
             break;
         case 'G':
-            result = S21_NULL;
+            result = ScienceShortUpperFloatStrategy;
             break;
     }
 

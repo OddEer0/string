@@ -10,6 +10,10 @@ long long llabs(long long int x) {
     return x < 0 ? -x : x;
 }
 
+long double lfabs(long double x) {
+    return x < 0.0 ? -x : x;
+}
+
 long long ldfloor(long double x) {
     return (long long)x;
 }
@@ -105,6 +109,10 @@ int intToStr(long long int x, char str[], int afterpoint) {
 
     long long $value = llabs(x);
 
+    if (x == 0) {
+        str[i++] = '0';
+    }
+
     for (long long int j = $value; j; j /= 10, i++)
         str[i] = (j % 10) + '0';
  
@@ -119,9 +127,20 @@ int intToStr(long long int x, char str[], int afterpoint) {
     return i; 
 } 
  
-void s21_ftoa(long double value, char* buff, int afterpoint) {
+char* s21_ftoa(long double value, char* buff, int afterpoint, int isScience) {
+    int scienceValue = 0;
+    int isZero = ldfloor(value) == 0;
+    for (; lfabs(value) > 10.0 && isScience; value /= 10, scienceValue++) {}
+    for (int i = 0; ldfloor(lfabs(value)) == 0 && isScience && i <= 35; value *= 10, scienceValue++, i++) {
+        if (i == 35) {
+            isZero = 0;
+            scienceValue = -1;
+        };
+    }
+
     long long decimalPart = ldfloor(value);
-    long double mantisPart = getMantis(value);
+    int isNegative = value < 0.0;
+    long double mantisPart = lfabs(getMantis(value));
     int length = 0;
     char temp[40] = "";
     buff[0] = '\0';
@@ -135,36 +154,51 @@ void s21_ftoa(long double value, char* buff, int afterpoint) {
 
             if (beforeResetCount >= 5) {
                 beforeResetCount = -1;
-
                 intToStr((long long)mantisPart, temp + length, 6);
                 length += 6;
                 $afterpoint -= 6;
                 mantisPart = getMantis(mantisPart);
             }
         }
-        int isRound = 0;
-        if (ldfloor(mantisPart * 10) % 10 >= 5)
-            isRound = 1;
+
         if (beforeResetCount) {
             intToStr((long long)mantisPart, temp + length, $afterpoint);
             length += beforeResetCount;
         }
-
-        for (int i = length - 1; i && isRound; i--) {
-            temp[i]++;
-            if (temp[i] > '9')
-                temp[i] = '0';
-            else
-                isRound = 0;
-        }
-
-        if (isRound)
-            decimalPart++;
     }
+    int isRound = 0;
+    if (ldfloor(mantisPart * 10) % 10 >= 5)
+        isRound = 1;
 
+    for (int i = length - 1; i > 0 && isRound; i--) {
+        temp[i]++;
+        if (temp[i] > '9')
+            temp[i] = '0';
+        else
+            isRound = 0;
+    }
+    temp[length] = '\0';
+
+    if (isRound)
+        isNegative ? decimalPart-- : decimalPart++;
     intToStr(decimalPart, buff, 0);
-
+    if (isScience) {
+        s21_strncat(temp, "E", 1);
+        length++;
+        if (scienceValue >= 10) {
+            s21_strncat(temp, isZero ? "-" : "+", 1);
+          length++;
+        } else {
+          s21_strncat(temp, isZero ? "-0" : "+0", 2);
+          length += 2;
+        }
+        char tmp[50];
+        s21_itoa(scienceValue, tmp, 10);
+        s21_strncat(temp, tmp, 50);
+        length += s21_strlen(tmp);
+    }
     s21_strncat(buff, temp, length);
+    return buff;
 }
 
 char* append(char* dest, char* append) {
