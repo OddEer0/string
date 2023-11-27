@@ -33,7 +33,6 @@ TGetValueFromArg DecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
     return result;
 }
 
-
 TGetValueFromArg UnsignedDecimalStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {S21_NULL, 0};
     char buff[30];
@@ -51,7 +50,6 @@ TGetValueFromArg UnsignedDecimalStrategy(TStrFormatParse* PFormat, va_list *args
     return result;
 }
 
-// TODO - Сделать обработку длины
 TGetValueFromArg CharStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {S21_NULL, 0};
 
@@ -211,22 +209,29 @@ TGetValueFromArg ScienceFloatStrategy(TStrFormatParse* PFormat, va_list *args) {
 
 TGetValueFromArg ScienceShortUpperFloatStrategy(TStrFormatParse* PFormat, va_list *args) {
     TGetValueFromArg result = {S21_NULL, 0};
-    char buff[50], buff2[50];
+    char buff[50];
+    int numLength = 0;
     if (PFormat->length == 'L') {
         long double val = va_arg(*args, long double);
-        s21_ftoa(val, buff, 2, 0);
-        s21_ftoa(val, buff2, PFormat->precision, 1);
+        numLength = getldLength(val);
+        int currentLength = PFormat->precision - numLength;
+        if (currentLength < 0)
+            s21_ftoa(val, buff, PFormat->precision - 1, 1);
+        else
+            s21_ftoa(val, buff, PFormat->precision - numLength, 0);
     } else {
         double val = va_arg(*args, double);
-        s21_ftoa(val, buff, 2, 0);
-        s21_ftoa(val, buff2, PFormat->precision, 1);
+        numLength = getldLength(val);
+        int currentLength = PFormat->precision - numLength;
+        if (currentLength < 0)
+            s21_ftoa(val, buff, PFormat->precision - 1, 1);
+        else
+            s21_ftoa(val, buff, PFormat->precision - numLength, 0);
     }
-    s21_size_t length2 = s21_strlen(buff);
-    s21_size_t length3 = s21_strlen(buff2);
-    s21_size_t length = length3 >= length2 ? length2 : length3;
+    s21_size_t length = s21_strlen(buff);
     result.value = calloc(length + 1, sizeof(char));
     result.value[0] = '\0';
-    s21_strncpy(result.value, length3 >= length2 ? buff : buff2, length);
+    s21_strncpy(result.value, buff, length);
     result.length = length;
     return result;
 }

@@ -7,6 +7,7 @@ all: clean s21_string.a test
 
 test: string/string.c __test__/*.c sprintf/strategy.c sprintf/index.c shared/*.c
 	$(CC) $(CFLAGS) $^ -o $@ $(GCOV_FLAGS) $(CHECK_FLAGS)
+	./test
 
 eztest: string/string.c __test__/*.c sprintf/strategy.c sprintf/index.c shared/*.c
 	$(CC) -std=c11 $^ -o $@ $(GCOV_FLAGS) $(CHECK_FLAGS)
@@ -17,10 +18,6 @@ watch: clean s21_string.a test
 
 sprint:
 	$(CC) $(CFLAGS) string/string.c shared/str_format_parser.c shared/utils.c sprintf/index.c sprintf/strategy.c sprintf/main.c -o sprint
-	./sprint
-
-ezsprint:
-	$(CC) string/string.c shared/str_format_parser.c shared/utils.c sprintf/index.c sprintf/strategy.c sprintf/main.c -o sprint
 	./sprint
 
 s21_string.a:

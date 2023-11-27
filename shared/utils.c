@@ -247,3 +247,12 @@ char* strWidth(char* str, int width, char sym, int isRight) {
 
     return result;
 }
+
+int getldLength(long double x) {
+    int result = 0;
+    x = x < 0.0 ? -x : x;
+    
+    for (; x >= 1.0; result++, x /= 10) {}
+    
+    return result;
+}

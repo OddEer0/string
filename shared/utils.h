@@ -5,4 +5,4 @@ char* repeat(char sym, int count);
 char* append(char* dest, char* append);
 char* prepend(char* dest, char* append);
 char* strWidth(char* str, int width, char sym, int isRight);
-int clearLastZero(char* str);
+int getldLength(long double x);
